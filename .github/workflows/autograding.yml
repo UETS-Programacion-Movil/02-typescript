@@ -2,7 +2,7 @@ name: "UETS Autograding and Quality Guard"
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches: [ main ]
   workflow_dispatch:
 
 permissions:
@@ -146,15 +146,23 @@ jobs:
       - name: "Publicar Calificacion en el PR"
         uses: actions/github-script@v7
         if: always() && github.event_name == 'pull_request'
+        env:
+          STATUS_FG: ${{ steps.file_guard.outputs.status }}
+          STATUS_CL: ${{ steps.commit_lint.outputs.status }}
+          STATUS_TC: ${{ steps.typecheck.outputs.status }}
+          STATUS_T1: ${{ steps.test_01.outputs.status }}
+          STATUS_T2: ${{ steps.test_02.outputs.status }}
+          STATUS_T3: ${{ steps.test_03.outputs.status }}
+          STATUS_T4: ${{ steps.test_04.outputs.status }}
         with:
           script: |
-            const fg = "${{ steps.file_guard.outputs.status }}";
-            const cl = "${{ steps.commit_lint.outputs.status }}";
-            const tc = "${{ steps.typecheck.outputs.status }}";
-            const t1 = "${{ steps.test_01.outputs.status }}";
-            const t2 = "${{ steps.test_02.outputs.status }}";
-            const t3 = "${{ steps.test_03.outputs.status }}";
-            const t4 = "${{ steps.test_04.outputs.status }}";
+            const fg = process.env.STATUS_FG;
+            const cl = process.env.STATUS_CL;
+            const tc = process.env.STATUS_TC;
+            const t1 = process.env.STATUS_T1;
+            const t2 = process.env.STATUS_T2;
+            const t3 = process.env.STATUS_T3;
+            const t4 = process.env.STATUS_T4;
 
             let score = 0.0;
             let fgText = fg === "pass" ? "✅ Válido" : "❌ Modificaciones no autorizadas";
