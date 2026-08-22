@@ -11,8 +11,7 @@
     "start:04": "tsx src/04_desafio_integrador.ts",
     "test:all": "tsx src/01_tipos_primitivos.ts && tsx src/02_puente_java_interfaces.ts && tsx src/03_unions_narrowing.ts && tsx src/04_desafio_integrador.ts",
     "check": "tsc --noEmit",
-    "build": "tsc",
-    "pdf": "node render_pdf.js"
+    "build": "tsc"
   },
   "keywords": [
     "typescript",
@@ -26,7 +25,6 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.13.4",
-    "puppeteer": "^24.2.1",
     "tsx": "^4.19.3",
     "typescript": "^5.7.3"
   }

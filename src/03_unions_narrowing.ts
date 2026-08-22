@@ -1,118 +1,125 @@
 /**
  * ============================================================================
- * EJERCICIO 03: Union Types, Literal Types, Narrowing y Type Guards
+ * 🥊 RETO 03: Union Types, Type Narrowing & Discriminated Unions para UI Móvil
  * Módulo: Programación Móvil — 3° Bachillerato Técnico (UETS)
  * Docente: Ing. Milton Velásquez
  * ============================================================================
  * 
- * 🎯 OBJETIVO PEDAGÓGICO:
- * En las aplicaciones móviles (React Native), las pantallas cambian de estado:
- * "cargando", "éxito con datos", o "error con mensaje".
- * Los 'Union Types' y 'Discriminated Unions' permiten modelar estos estados de
- * forma imposible de romper en tiempo de ejecución.
+ * 📖 CONTEXTO / MISIÓN:
+ * En React Native, una pantalla conectada a una API puede estar: cargando con
+ * un spinner, mostrando los datos obtenidos con éxito, o mostrando un mensaje
+ * de error si se cae la red.
+ * Tu misión es modelar estos 3 estados con un 'Discriminated Union' para que
+ * la app jamás explote por variables indefinidas.
+ * 
+ * 🛠️ INSTRUCCIONES:
+ * 1. Define los tipos y la unión discriminada de estados.
+ * 2. Implementa `formatearIdentificador` usando estrechamiento de tipos (`typeof`).
+ * 3. Implementa `renderizarEstadoUI` con un `switch(estado.status)`.
+ * 4. Ejecuta en tu terminal: `pnpm run start:03` para verificar los tests.
  */
 
 console.log("=================================================================");
-console.log("🚀 EJERCICIO 03: Union Types y Discriminated Unions para UI Móvil");
+console.log("🥊 EJECUTANDO PRUEBAS: RETO 03 — Estados Móviles & Uniones");
 console.log("=================================================================\n");
 
-// ----------------------------------------------------------------------------
-// 1. Literal Types y Union Types Básicos
-// ----------------------------------------------------------------------------
-export type TemaApp = "CLARO" | "OSCURO" | "ALTO_CONTRASTE";
-export type NivelBateria = "BAJO" | "MEDIO" | "LLENO";
-
-export function notificarBateria(nivel: NivelBateria): string {
-  switch (nivel) {
-    case "BAJO":
-      return "⚠️ Nivel de batería bajo (<20%). Activa el modo ahorro.";
-    case "MEDIO":
-      return "🔋 Batería estable (20% - 80%).";
-    case "LLENO":
-      return "⚡ Batería cargada al 100%.";
-  }
-}
-
-console.log(notificarBateria("BAJO"));
-console.log(notificarBateria("LLENO") + "\n");
-
-// ----------------------------------------------------------------------------
-// 2. Type Narrowing (Estrechamiento de Tipos con typeof)
-// ----------------------------------------------------------------------------
+// ============================================================================
+// PASO 1: Type Narrowing Básico con typeof
+// ============================================================================
+/**
+ * TODO: Implementa la función `formatearIdentificador`.
+ * - Recibe un `id` que puede ser `string` o `number`.
+ * - Si es `string`, retornar: `ID-ALFANUMERICO-` seguido del texto en MAYÚSCULAS.
+ * - Si es `number`, retornar: `ID-NUMERICO-#` seguido del número relleno con ceros a 6 dígitos (ej: 42 -> "000042").
+ *   (Pista: usa id.toFixed(0).padStart(6, "0"))
+ */
 export function formatearIdentificador(id: string | number): string {
   if (typeof id === "string") {
-    // Aquí TypeScript SABE que id es un STRING (habilita toUpperCase)
     return `ID-ALFANUMERICO-${id.toUpperCase()}`;
   } else {
-    // Aquí TypeScript SABE que id es un NUMBER (habilita toFixed)
     return `ID-NUMERICO-#${id.toFixed(0).padStart(6, "0")}`;
   }
 }
 
-console.log("🔍 Type Narrowing en acción:");
-console.log("  " + formatearIdentificador("usr-uets-99"));
-console.log("  " + formatearIdentificador(450) + "\n");
-
-// ----------------------------------------------------------------------------
-// 3. Discriminated Unions: El Patrón Estándar para Peticiones HTTP en Móviles
-// ----------------------------------------------------------------------------
+// ============================================================================
+// PASO 2: Modelado de Estados con Discriminated Unions
+// ============================================================================
 export interface EstadoCargando {
   status: "LOADING";
-  progresoPorcentaje: number;
+  porcentaje: number;
 }
 
 export interface EstadoExito<T> {
   status: "SUCCESS";
   datos: T;
-  timestamp: string;
+  hora: string;
 }
 
 export interface EstadoError {
   status: "ERROR";
-  codigoError: number;
-  mensajeUsuario: string;
+  codigo: number;
+  mensaje: string;
 }
 
 // Unión discriminada:
-export type EstadoPeticionMovil<T> =
+export type EstadoPantalla<T> =
   | EstadoCargando
   | EstadoExito<T>
   | EstadoError;
 
 /**
- * Función simuladora de renderizado de interfaz móvil según el estado
+ * TODO: Implementa `renderizarEstadoUI`.
+ * Utiliza un `switch (estado.status)`:
+ * - Si status === "LOADING": Retornar `⏳ Cargando datos (${estado.porcentaje}%)...`
+ * - Si status === "SUCCESS": Retornar `🎉 Datos cargados con éxito a las ${estado.hora}`
+ * - Si status === "ERROR": Retornar `❌ Error ${estado.codigo}: ${estado.mensaje}`
  */
-export function renderizarEstadoUI<T>(estado: EstadoPeticionMovil<T>): string {
+export function renderizarEstadoUI<T>(estado: EstadoPantalla<T>): string {
   switch (estado.status) {
     case "LOADING":
-      return `⏳ [PANTALLA MÓVIL] Spinner activo (${estado.progresoPorcentaje}%)...`;
+      return `⏳ Cargando datos (${estado.porcentaje}%)...`;
     case "SUCCESS":
-      return `🎉 [PANTALLA MÓVIL] Datos cargados con éxito a las ${estado.timestamp}. Total registros: ${JSON.stringify(estado.datos)}`;
+      return `🎉 Datos cargados con éxito a las ${estado.hora}`;
     case "ERROR":
-      return `❌ [PANTALLA MÓVIL] Error ${estado.codigoError}: ${estado.mensajeUsuario}`;
+      return `❌ Error ${estado.codigo}: ${estado.mensaje}`;
   }
 }
 
-// Pruebas con diferentes estados:
-const peticion1: EstadoPeticionMovil<string[]> = {
-  status: "LOADING",
-  progresoPorcentaje: 45
-};
+// ============================================================================
+// 🧪 BATERÍA DE PRUEBAS AUTOMATIZADAS (NO MODIFICAR ESTA SECCIÓN)
+// ============================================================================
+let testsFallidos = 0;
 
-const peticion2: EstadoPeticionMovil<string[]> = {
-  status: "SUCCESS",
-  datos: ["Notificación 1", "Tarea de Programación Móvil", "Aviso UETS"],
-  timestamp: "10:30 AM"
-};
+function assert(condicion: boolean, descripcion: string, pista?: string) {
+  if (condicion) {
+    console.log(`  ✅ [PASÓ]: ${descripcion}`);
+  } else {
+    console.log(`  ❌ [FALLÓ]: ${descripcion}`);
+    if (pista) console.log(`     👉 PISTA: ${pista}`);
+    testsFallidos++;
+  }
+}
 
-const peticion3: EstadoPeticionMovil<string[]> = {
-  status: "ERROR",
-  codigoError: 404,
-  mensajeUsuario: "No se pudo conectar al servidor de calificaciones."
-};
+console.log("🔍 Verificando Paso 1: formatearIdentificador()...");
+assert(formatearIdentificador("usr-uets-99") === "ID-ALFANUMERICO-USR-UETS-99", "String formateado a mayúsculas correctamente");
+assert(formatearIdentificador(45) === "ID-NUMERICO-#000045", "Number formateado a 6 dígitos con padStart", "Usa id.toFixed(0).padStart(6, '0')");
 
-console.log(renderizarEstadoUI(peticion1));
-console.log(renderizarEstadoUI(peticion2));
-console.log(renderizarEstadoUI(peticion3) + "\n");
+console.log("\n🔍 Verificando Paso 2: renderizarEstadoUI() con Discriminated Unions...");
+const estadoLoad: EstadoPantalla<string> = { status: "LOADING", porcentaje: 50 };
+assert(renderizarEstadoUI(estadoLoad) === "⏳ Cargando datos (50%)...", "Estado LOADING renderizado correctamente");
 
-console.log("✅ Ejercicio 03 completado exitosamente sin errores de compilación.\n");
+const estadoSuccess: EstadoPantalla<string[]> = { status: "SUCCESS", datos: ["A", "B"], hora: "10:30" };
+assert(renderizarEstadoUI(estadoSuccess) === "🎉 Datos cargados con éxito a las 10:30", "Estado SUCCESS renderizado correctamente");
+
+const estadoErr: EstadoPantalla<null> = { status: "ERROR", codigo: 404, mensaje: "No encontrado" };
+assert(renderizarEstadoUI(estadoErr) === "❌ Error 404: No encontrado", "Estado ERROR renderizado correctamente");
+
+console.log("\n-----------------------------------------------------------------");
+if (testsFallidos === 0) {
+  console.log("🎉 ¡FELICITACIONES! Has completado el Reto 03 con 100% de éxito.");
+  console.log("👉 Avanza al Reto 04 ejecutando: pnpm run start:04\n");
+  process.exit(0);
+} else {
+  console.log(`⚠️ Tienes ${testsFallidos} prueba(s) pendiente(s). Corrige tu código y vuelve a ejecutar.`);
+  process.exit(1);
+}

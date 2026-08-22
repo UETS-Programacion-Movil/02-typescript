@@ -1,97 +1,126 @@
 /**
  * ============================================================================
- * EJERCICIO 01: Tipos Primitivos, Inferencia y Arrays en TypeScript
+ * 🥊 RETO 01: Tipos Primitivos, Inferencia y Arrays en TypeScript
  * Módulo: Programación Móvil — 3° Bachillerato Técnico (UETS)
  * Docente: Ing. Milton Velásquez
  * ============================================================================
  * 
- * 🎯 OBJETIVO PEDAGÓGICO (MÉTODO TEACH / MATT POCOCK):
- * Comprender cómo TypeScript introduce tipado estático sobre JavaScript sin
- * perder la agilidad de desarrollo. Entender la diferencia entre inferencia
- * y anotación explícita.
+ * 📖 CONTEXTO / MISIÓN:
+ * El sistema web anterior de la UETS sumaba calificaciones en JavaScript vanilla
+ * sin tipos ("10" + "8" = "108"), produciendo errores graves en los promedios.
+ * Tu misión es implementar las funciones de cálculo y formateo con tipado estricto.
  * 
- * ☕ PUENTE CON JAVA:
- * En Java escribes: int x = 10; double y = 5.5; String s = "Hola";
- * En TypeScript escribes: const x: number = 10; const s: string = "Hola";
+ * 🛠️ INSTRUCCIONES:
+ * 1. Lee atentamente cada bloque marcado con `// TODO:`.
+ * 2. Escribe o corrige el código TypeScript según las especificaciones.
+ * 3. Ejecuta en tu terminal: `pnpm run start:01` para verificar los tests.
  */
 
 console.log("=================================================================");
-console.log("🚀 EJERCICIO 01: Tipos Primitivos y Arrays en TypeScript");
+console.log("🥊 EJECUTANDO PRUEBAS: RETO 01 — Tipos Primitivos & Arrays");
 console.log("=================================================================\n");
 
-// ----------------------------------------------------------------------------
-// 1. Tipos Primitivos Básicos
-// ----------------------------------------------------------------------------
-const nombreEstudiante: string = "Carlos Andrade";
-const edadEstudiante: number = 17;
-const promedioAcademico: number = 9.75;
-const estaMatriculado: boolean = true;
+// ============================================================================
+// PASO 1: Tipado de Variables Personales
+// ============================================================================
+// TODO: Declara las variables con sus tipos explícitos requeridos:
+// - `nombreEstudiante` (string) -> Asigna tu nombre
+// - `edadEstudiante` (number) -> Asigna tu edad
+// - `promedioObjetivo` (number) -> Asigna una nota decimal (ej: 9.85)
+// - `estaMatriculado` (boolean) -> Asigna true
 
-console.log(`👤 Estudiante: ${nombreEstudiante}`);
-console.log(`🎂 Edad: ${edadEstudiante} años | Promedio: ${promedioAcademico}/10`);
-console.log(`📋 Estado Matrícula: ${estaMatriculado ? "ACTIVO" : "INACTIVO"}\n`);
+export const nombreEstudiante: string = "Estudiante Salesiano";
+export const edadEstudiante: number = 17;
+export const promedioObjetivo: number = 9.85;
+export const estaMatriculado: boolean = true;
 
-// ----------------------------------------------------------------------------
-// 2. Arrays y Colecciones Tipadas
-// ----------------------------------------------------------------------------
-// En Java: String[] materias = {"Móvil", "Web", "Sistemas"};
-// En TS: string[] o Array<string>
-const asignaturasTecnicas: string[] = [
-  "Programación Móvil (React Native)",
-  "Desarrollo Web",
-  "Bases de Datos",
-  "Sistemas Operativos"
-];
-
-// Array de tuplas o tipos combinados:
-const calificacionesParciales: readonly number[] = [10, 9.5, 9.8, 10];
-
-console.log("📚 Asignaturas Registradas:");
-asignaturasTecnicas.forEach((materia, index) => {
-  console.log(`  ${index + 1}. ${materia}`);
-});
-
-// ----------------------------------------------------------------------------
-// 3. Funciones Tipadas con Retorno Explícito
-// ----------------------------------------------------------------------------
+// ============================================================================
+// PASO 2: Función para Calcular el Promedio
+// ============================================================================
 /**
- * Calcula el promedio general a partir de un arreglo de notas.
- * @param notas Lista inmutable de números
- * @returns Promedio redondeado a 2 decimales
+ * TODO: Implementa la función `calcularPromedio`.
+ * Debe:
+ * - Recibir `notas`: un arreglo inmutable de números (`readonly number[]`).
+ * - Si el arreglo está vacío, retornar `0`.
+ * - Sumar todas las notas y dividir para la cantidad de elementos.
+ * - Retornar el resultado como número redondeado a 2 decimales.
  */
 export function calcularPromedio(notas: readonly number[]): number {
   if (notas.length === 0) return 0;
-  const suma = notas.reduce((acum, actual) => acum + actual, 0);
+  const suma = notas.reduce((acum, nota) => acum + nota, 0);
   return Number((suma / notas.length).toFixed(2));
 }
 
-const promedioFinal = calcularPromedio(calificacionesParciales);
-console.log(`\n🎯 Promedio Calculado: ${promedioFinal} / 10`);
-
-// ----------------------------------------------------------------------------
-// 4. RETO / TODO: Formateador de Ficha Estudiantil
-// ----------------------------------------------------------------------------
+// ============================================================================
+// PASO 3: Formateador de Ficha Técnica
+// ============================================================================
 /**
- * TODO (Paso 1): Completa la función `formatearFichaTecnica`
- * Debe recibir:
+ * TODO: Implementa la función `formatearFichaEstudiante`.
+ * Parámetros requeridos:
  *  - nombre (string)
  *  - edad (number)
- *  - paralelo ("E1" | "E2")
+ *  - paralelo ("E1" | "E2") -> Literal Type
  *  - activo (boolean)
- * Debe retornar un string formateado con la información.
+ * 
+ * Formato de salida requerido:
+ *  `[FICHA UETS] NOMBRE_EN_MAYUSCULAS (XX años) - Paralelo: E1 - Estado: MATRICULADO` (o RETIRADO si activo es false)
  */
-export function formatearFichaTecnica(
+export function formatearFichaEstudiante(
   nombre: string,
   edad: number,
   paralelo: "E1" | "E2",
   activo: boolean
 ): string {
-  const estadoTexto = activo ? "MATRICULADO" : "RETIRADO";
-  return `[FICHA UETS] ${nombre.toUpperCase()} (${edad} años) - Paralelo: ${paralelo} - Estado: ${estadoTexto}`;
+  const estado = activo ? "MATRICULADO" : "RETIRADO";
+  return `[FICHA UETS] ${nombre.toUpperCase()} (${edad} años) - Paralelo: ${paralelo} - Estado: ${estado}`;
 }
 
-// Comprobación rápida:
-const ficha1 = formatearFichaTecnica("Mateo Vintimilla", 17, "E1", true);
-console.log(`\n📄 Salida del Reto 1:\n  ${ficha1}\n`);
+// ============================================================================
+// 🧪 BATERÍA DE PRUEBAS AUTOMATIZADAS (NO MODIFICAR ESTA SECCIÓN)
+// ============================================================================
+let testsFallidos = 0;
 
-console.log("✅ Ejercicio 01 completado exitosamente sin errores de compilación.\n");
+function assert(condicion: boolean, descripcion: string, pista?: string) {
+  if (condicion) {
+    console.log(`  ✅ [PASÓ]: ${descripcion}`);
+  } else {
+    console.log(`  ❌ [FALLÓ]: ${descripcion}`);
+    if (pista) console.log(`     👉 PISTA: ${pista}`);
+    testsFallidos++;
+  }
+}
+
+console.log("🔍 Verificando Paso 1: Tipos de Variables...");
+assert(typeof nombreEstudiante === "string" && nombreEstudiante.length > 0, "nombreEstudiante es un string válido");
+assert(typeof edadEstudiante === "number" && edadEstudiante > 0, "edadEstudiante es un number positivo");
+assert(typeof promedioObjetivo === "number", "promedioObjetivo es de tipo number");
+assert(typeof estaMatriculado === "boolean", "estaMatriculado es de tipo boolean");
+
+console.log("\n🔍 Verificando Paso 2: calcularPromedio()...");
+assert(calcularPromedio([]) === 0, "calcularPromedio([]) con arreglo vacío debe retornar 0", "Verifica el if (notas.length === 0)");
+assert(calcularPromedio([10, 8, 9]) === 9, "calcularPromedio([10, 8, 9]) debe retornar 9");
+assert(calcularPromedio([9.5, 9.8, 10]) === 9.77, "calcularPromedio([9.5, 9.8, 10]) debe retornar 9.77 (redondeado)");
+
+console.log("\n🔍 Verificando Paso 3: formatearFichaEstudiante()...");
+const fichaEsperada1 = "[FICHA UETS] MATEO VINTIMILLA (17 años) - Paralelo: E1 - Estado: MATRICULADO";
+assert(
+  formatearFichaEstudiante("Mateo Vintimilla", 17, "E1", true) === fichaEsperada1,
+  "Ficha generada correctamente para estudiante matriculado",
+  "Revisa mayúsculas con .toUpperCase() y el texto exacto"
+);
+
+const fichaEsperada2 = "[FICHA UETS] ANA MORALES (16 años) - Paralelo: E2 - Estado: RETIRADO";
+assert(
+  formatearFichaEstudiante("Ana Morales", 16, "E2", false) === fichaEsperada2,
+  "Ficha generada correctamente para estudiante retirado"
+);
+
+console.log("\n-----------------------------------------------------------------");
+if (testsFallidos === 0) {
+  console.log("🎉 ¡FELICITACIONES! Has completado el Reto 01 con 100% de éxito.");
+  console.log("👉 Avanza al Reto 02 ejecutando: pnpm run start:02\n");
+  process.exit(0);
+} else {
+  console.log(`⚠️ Tienes ${testsFallidos} prueba(s) pendiente(s). Corrige tu código y vuelve a ejecutar.`);
+  process.exit(1);
+}
