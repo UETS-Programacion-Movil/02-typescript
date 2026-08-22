@@ -1,0 +1,33 @@
+{
+  "name": "semana-02-typescript",
+  "version": "1.0.0",
+  "description": "Material Didáctico y Taller Práctico: Bases de TypeScript y Puente Pedagógico con Java — Programación Móvil (3° BGU) — UETS 2026-2027",
+  "main": "src/01_tipos_primitivos.ts",
+  "type": "module",
+  "scripts": {
+    "start:01": "tsx src/01_tipos_primitivos.ts",
+    "start:02": "tsx src/02_puente_java_interfaces.ts",
+    "start:03": "tsx src/03_unions_narrowing.ts",
+    "start:04": "tsx src/04_desafio_integrador.ts",
+    "test:all": "tsx src/01_tipos_primitivos.ts && tsx src/02_puente_java_interfaces.ts && tsx src/03_unions_narrowing.ts && tsx src/04_desafio_integrador.ts",
+    "check": "tsc --noEmit",
+    "build": "tsc",
+    "pdf": "node render_pdf.js"
+  },
+  "keywords": [
+    "typescript",
+    "react-native",
+    "java",
+    "uets",
+    "bachillerato-tecnico",
+    "mobile-development"
+  ],
+  "author": "Ing. Milton Velásquez <UETS>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "puppeteer": "^24.2.1",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3"
+  }
+}
