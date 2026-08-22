@@ -853,31 +853,44 @@ puntaje = <span class="str">"Cien"</span>; <span class="cm">// ¿Qué ocurre en 
 
       <div style="margin-top: 10px;">
         <h2 class="font-display title-xl">RETO 01: TIPOS PRIMITIVOS & PROMEDIOS</h2>
-        <p style="font-size: 24px; color: var(--ink-2); margin-bottom: 20px;">
-          <b>Misión:</b> El sistema web antiguo sumaba notas como texto. Corrígelo con tipado estricto.
+        <p style="font-size: 24px; color: var(--ink-2); margin-bottom: 16px;">
+          <b>Misión:</b> Corrige el sistema antiguo de notas declarando tipos estrictos y resumiendo tus datos.
         </p>
       </div>
 
       <div class="grid-2">
         <div class="card card-yellow">
-          <h3 class="font-display" style="font-size: 24px; margin-bottom: 12px;">📋 TAREAS A REALIZAR:</h3>
-          <ul style="font-size: 20px; line-height: 1.6; margin-left: 20px;">
-            <li>Tipar variables personales: <code>nombreEstudiante</code> (string), <code>edadEstudiante</code> (number).</li>
-            <li>Implementar <code>calcularPromedio(notas: readonly number[])</code> sumando el arreglo y dividiendo para <code>notas.length</code>.</li>
-            <li>Completar <code>formatearFichaEstudiante(...)</code> generando el texto institucional en mayúsculas.</li>
+          <h3 class="font-display" style="font-size: 22px; margin-bottom: 10px;">📋 CÓDIGO EN src/01_tipos_primitivos.ts:</h3>
+          <ul style="font-size: 18px; line-height: 1.5; margin-left: 20px;">
+            <li>Tipar variables personales: <code>nombreEstudiante</code>, <code>edadEstudiante</code>, <code>promedioObjetivo</code>, <code>estaMatriculado</code>.</li>
+            <li>Implementar <code>obtenerResumenPersonal()</code> con Template Strings (<code>${...}</code>).</li>
+            <li>Implementar <code>calcularPromedio(notas: readonly number[])</code>.</li>
+            <li>Implementar <code>formatearFichaEstudiante(...)</code> en mayúsculas.</li>
           </ul>
         </div>
 
         <div class="card card-cream">
-          <h3 class="font-display" style="font-size: 24px; margin-bottom: 12px;">💻 CÓMO PROBARLO EN TERMINAL:</h3>
-          <div class="code-box" style="font-size: 18px;">
-<span class="cm"># Ejecutar las pruebas del Reto 01:</span>
-pnpm run start:01
+          <div class="code-header">
+            <span class="tag-ts">💻 SALIDA ESPERADA (pnpm run start:01)</span>
+          </div>
+          <div class="code-box" style="font-size: 14px; line-height: 1.35;">
+┌────────────────────────────────────────────────────────┐
+│ 👤 RESUMEN DEL ESTUDIANTE EN CONSOLA                   │
+│ 👤 Estudiante: Mateo Vintimilla | 🎂 Edad: 17 años ... │
+└────────────────────────────────────────────────────────┘
 
-<span class="cm"># Salida esperada en terminal:</span>
-✅ [PASÓ]: nombreEstudiante es string
-✅ [PASÓ]: calcularPromedio([10, 8, 9]) === 9
-✅ [PASÓ]: Ficha generada correctamente
+🔍 Verificando Paso 1: Tipos de Variables y Resumen...
+  ✅ [PASÓ]: nombreEstudiante es un string válido
+  ✅ [PASÓ]: edadEstudiante es un number positivo
+  ✅ [PASÓ]: obtenerResumenPersonal() implementada
+
+🔍 Verificando Paso 2: calcularPromedio()...
+  ✅ [PASÓ]: calcularPromedio([]) === 0
+  ✅ [PASÓ]: calcularPromedio([10, 8, 9]) === 9
+
+🔍 Verificando Paso 3: formatearFichaEstudiante()...
+  ✅ [PASÓ]: Ficha generada correctamente
+🎉 ¡FELICITACIONES! Has completado el Reto 01.
           </div>
         </div>
       </div>
@@ -902,31 +915,42 @@ pnpm run start:01
 
       <div style="margin-top: 10px;">
         <h2 class="font-display title-xl">RETO 02: INTERFACES & PUENTE JAVA</h2>
-        <p style="font-size: 24px; color: var(--ink-2); margin-bottom: 20px;">
+        <p style="font-size: 24px; color: var(--ink-2); margin-bottom: 16px;">
           <b>Misión:</b> Reemplaza la clase pesada <code>UsuarioJava.java</code> por interfaces limpias en TypeScript.
         </p>
       </div>
 
       <div class="grid-2">
         <div class="card card-pink">
-          <h3 class="font-display" style="font-size: 24px; margin-bottom: 12px;">📋 TAREAS A REALIZAR:</h3>
-          <ul style="font-size: 20px; line-height: 1.6; margin-left: 20px;">
-            <li>Definir <code>interface PerfilUsuario</code> con <code>readonly id: string</code>, <code>telefono?: string</code> (opcional) y <code>rol</code> con union type.</li>
-            <li>Definir <code>interface ProductoItem</code> con modificadores adecuados.</li>
-            <li>Implementar <code>calcularPrecioFinal(producto)</code> aplicando descuentos porcentuales con 2 decimales.</li>
+          <h3 class="font-display" style="font-size: 22px; margin-bottom: 10px;">📋 CÓDIGO EN src/02_puente_java_interfaces.ts:</h3>
+          <ul style="font-size: 18px; line-height: 1.5; margin-left: 20px;">
+            <li>Definir <code>interface PerfilUsuario</code> con <code>readonly id</code>, <code>telefono?</code> y <code>rol</code> tipo union.</li>
+            <li>Implementar <code>formatearPerfilUsuario(usuario)</code>.</li>
+            <li>Definir <code>interface ProductoItem</code> con <code>descuentoPorcentaje?</code>.</li>
+            <li>Implementar <code>calcularPrecioFinal(producto)</code> con 2 decimales.</li>
           </ul>
         </div>
 
         <div class="card card-cream">
-          <h3 class="font-display" style="font-size: 24px; margin-bottom: 12px;">💻 CÓMO PROBARLO EN TERMINAL:</h3>
-          <div class="code-box" style="font-size: 18px;">
-<span class="cm"># Ejecutar las pruebas del Reto 02:</span>
-pnpm run start:02
+          <div class="code-header">
+            <span class="tag-ts">💻 SALIDA ESPERADA (pnpm run start:02)</span>
+          </div>
+          <div class="code-box" style="font-size: 14px; line-height: 1.35;">
+┌────────────────────────────────────────────────────────┐
+│ 📱 PERFIL DE USUARIO FORMATEADO EN CONSOLA             │
+│ [PERFIL] UETS-2026-001 (ESTUDIANTE): Carlos Andrade... │
+└────────────────────────────────────────────────────────┘
 
-<span class="cm"># Salida esperada en terminal:</span>
-✅ [PASÓ]: usuarioEjemplo tiene id string
-✅ [PASÓ]: Producto con 25% descuento ($15.00)
-✅ [PASÓ]: Producto NO disponible retorna $0.00
+🔍 Verificando Paso 1: Interface PerfilUsuario...
+  ✅ [PASÓ]: usuarioEjemplo tiene un id tipo string válido
+  ✅ [PASÓ]: usuarioEjemplo tiene nombreCompleto
+  ✅ [PASÓ]: formatearPerfilUsuario() implementada
+
+🔍 Verificando Paso 2: calcularPrecioFinal()...
+  ✅ [PASÓ]: Producto con 25% descuento calcula $15.00
+  ✅ [PASÓ]: Producto sin descuento mantiene $8.50
+  ✅ [PASÓ]: Producto NO disponible retorna $0.00
+🎉 ¡FELICITACIONES! Has completado el Reto 02.
           </div>
         </div>
       </div>
@@ -951,30 +975,37 @@ pnpm run start:02
 
       <div style="margin-top: 10px;">
         <h2 class="font-display title-xl">RETO 03: ESTADOS MÓVILES & UNIONES</h2>
-        <p style="font-size: 24px; color: var(--ink-2); margin-bottom: 20px;">
+        <p style="font-size: 24px; color: var(--ink-2); margin-bottom: 16px;">
           <b>Misión:</b> Evitar que la app móvil se cierre al perder internet usando Discriminated Unions.
         </p>
       </div>
 
       <div class="grid-2">
         <div class="card card-orange">
-          <h3 class="font-display" style="font-size: 24px; margin-bottom: 12px;">📋 TAREAS A REALIZAR:</h3>
-          <ul style="font-size: 20px; line-height: 1.6; margin-left: 20px;">
+          <h3 class="font-display" style="font-size: 22px; margin-bottom: 10px;">📋 CÓDIGO EN src/03_unions_narrowing.ts:</h3>
+          <ul style="font-size: 18px; line-height: 1.5; margin-left: 20px;">
             <li>Implementar <code>formatearIdentificador(id: string | number)</code> usando <code>typeof id === "string"</code>.</li>
             <li>Implementar <code>renderizarEstadoUI(estado)</code> usando <code>switch(estado.status)</code> para manejar <code>LOADING</code>, <code>SUCCESS</code> y <code>ERROR</code>.</li>
           </ul>
         </div>
 
         <div class="card card-cream">
-          <h3 class="font-display" style="font-size: 24px; margin-bottom: 12px;">💻 CÓMO PROBARLO EN TERMINAL:</h3>
-          <div class="code-box" style="font-size: 18px;">
-<span class="cm"># Ejecutar las pruebas del Reto 03:</span>
-pnpm run start:03
+          <div class="code-header">
+            <span class="tag-ts">💻 SALIDA ESPERADA (pnpm run start:03)</span>
+          </div>
+          <div class="code-box" style="font-size: 14px; line-height: 1.35;">
+🔍 Verificando Paso 1: formatearIdentificador()...
+  ✅ [PASÓ]: String formateado a mayúsculas correctamente
+  ✅ [PASÓ]: Number formateado a 6 dígitos con padStart
 
-<span class="cm"># Salida esperada en terminal:</span>
-✅ [PASÓ]: String formateado a mayúsculas
-✅ [PASÓ]: Number formateado a 6 dígitos
-✅ [PASÓ]: Estados LOADING/SUCCESS/ERROR
+🔍 Verificando Paso 2: renderizarEstadoUI()...
+  ✅ [PASÓ]: Estado LOADING renderizado correctamente
+  ✅ [PASÓ]: Estado SUCCESS renderizado correctamente
+  ✅ [PASÓ]: Estado ERROR renderizado correctamente
+
+-----------------------------------------------------------------
+🎉 ¡FELICITACIONES! Has completado el Reto 03 con 100% de éxito.
+👉 Avanza al Reto 04 ejecutando: pnpm run start:04
           </div>
         </div>
       </div>
@@ -999,17 +1030,17 @@ pnpm run start:03
 
       <div style="margin-top: 10px;">
         <h2 class="font-display title-xl">RETO 04: CARRITO DEL BAR SALESIANO</h2>
-        <p style="font-size: 24px; color: var(--ink-2); margin-bottom: 20px;">
+        <p style="font-size: 24px; color: var(--ink-2); margin-bottom: 16px;">
           <b>Misión:</b> Construir el motor financiero de la app de la cafetería escolar UETS.
         </p>
       </div>
 
       <div class="grid-2">
         <div class="card card-green">
-          <h3 class="font-display" style="font-size: 24px; margin-bottom: 12px;">📋 TAREAS A REALIZAR:</h3>
-          <ul style="font-size: 20px; line-height: 1.6; margin-left: 20px;">
+          <h3 class="font-display" style="font-size: 22px; margin-bottom: 10px;">📋 CÓDIGO EN src/04_desafio_integrador.ts:</h3>
+          <ul style="font-size: 18px; line-height: 1.5; margin-left: 20px;">
             <li>Implementar <code>calcularTotalesPedido(pedido)</code> calculando:
-              <ul style="margin-left: 20px; margin-top: 6px;">
+              <ul style="margin-left: 20px; margin-top: 4px;">
                 <li>Subtotal bruto acumulado.</li>
                 <li>Descuento estudiantil (10% si subtotal >= $10.00).</li>
                 <li>IVA (15% sobre base imponible neta).</li>
@@ -1020,16 +1051,23 @@ pnpm run start:03
         </div>
 
         <div class="card card-cream">
-          <h3 class="font-display" style="font-size: 24px; margin-bottom: 12px;">💻 CÓMO PROBARLO EN TERMINAL:</h3>
-          <div class="code-box" style="font-size: 18px;">
-<span class="cm"># Ejecutar las pruebas del Reto 04:</span>
-pnpm run start:04
-
-<span class="cm"># Salida esperada en terminal:</span>
-✅ [PASÓ]: Subtotal calculado
-✅ [PASÓ]: Descuento 10% aplicado (>= $10)
-✅ [PASÓ]: Total final con IVA 15%
-📱 [IMPRESIÓN DEL TICKET DIGITAL UETS]
+          <div class="code-header">
+            <span class="tag-ts">💻 SALIDA ESPERADA (pnpm run start:04)</span>
+          </div>
+          <div class="code-box" style="font-size: 13px; line-height: 1.25;">
+  ✅ [PASÓ]: Subtotal calculado: $5.00
+  ✅ [PASÓ]: Sin descuento para compras menores a $10.00
+  ✅ [PASÓ]: IVA 15% de $5.00 es $0.75
+  ✅ [PASÓ]: Total a pagar: $5.75
+  ✅ [PASÓ]: Subtotal calculado: $10.50
+  ✅ [PASÓ]: Descuento 10% aplicado (>= $10) ($1.05)
+  ✅ [PASÓ]: Total final con IVA 15%: $10.87
+╔══════════════════════════════════════════════════════════════╗
+║           📱 BAR SALESIANO UETS - RECIBO DIGITAL             ║
+╠══════════════════════════════════════════════════════════════╣
+║ 💳 TOTAL A PAGAR:       $                              10.87 ║
+╚══════════════════════════════════════════════════════════════╝
+🎉 ¡FELICITACIONES! Has completado el Reto 04.
           </div>
         </div>
       </div>

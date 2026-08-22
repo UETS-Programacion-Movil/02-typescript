@@ -5,11 +5,11 @@
   "main": "src/01_tipos_primitivos.ts",
   "type": "module",
   "scripts": {
-    "start:01": "tsx src/01_tipos_primitivos.ts",
-    "start:02": "tsx src/02_puente_java_interfaces.ts",
-    "start:03": "tsx src/03_unions_narrowing.ts",
-    "start:04": "tsx src/04_desafio_integrador.ts",
-    "test:all": "tsx src/01_tipos_primitivos.ts && tsx src/02_puente_java_interfaces.ts && tsx src/03_unions_narrowing.ts && tsx src/04_desafio_integrador.ts",
+    "start:01": "tsx tests/01_tipos_primitivos.test.ts",
+    "start:02": "tsx tests/02_puente_java_interfaces.test.ts",
+    "start:03": "tsx tests/03_unions_narrowing.test.ts",
+    "start:04": "tsx tests/04_desafio_integrador.test.ts",
+    "test:all": "tsx tests/01_tipos_primitivos.test.ts && tsx tests/02_puente_java_interfaces.test.ts && tsx tests/03_unions_narrowing.test.ts && tsx tests/04_desafio_integrador.test.ts",
     "check": "tsc --noEmit",
     "build": "tsc"
   },
