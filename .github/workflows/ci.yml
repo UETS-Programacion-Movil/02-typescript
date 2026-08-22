@@ -1,8 +1,7 @@
-name: "UETS Autograding and Quality Guard"
+name: "Autograding"
 
 on:
   pull_request:
-    branches: [ main ]
   workflow_dispatch:
 
 permissions:
