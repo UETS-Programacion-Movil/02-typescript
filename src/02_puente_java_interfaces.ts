@@ -12,8 +12,9 @@
  * 
  * 🛠️ INSTRUCCIONES:
  * 1. Define la interface `PerfilUsuario` para reemplazar la clase Java antigua.
- * 2. Define la interface `ProductoItem` y programa el cálculo de precios con descuento.
- * 3. Ejecuta en tu terminal: `pnpm run start:02` para verificar los tests.
+ * 2. Implementa `formatearPerfilUsuario` para visualizar el perfil en pantalla.
+ * 3. Define la interface `ProductoItem` y programa el cálculo de precios con descuento.
+ * 4. Ejecuta en tu terminal: `pnpm run start:02` para verificar los tests.
  */
 
 console.log("=================================================================");
@@ -64,6 +65,17 @@ export const usuarioEjemplo: PerfilUsuario = {
   rol: "ESTUDIANTE"
 };
 
+/**
+ * TODO: Implementa `formatearPerfilUsuario`.
+ * Formato requerido:
+ * `[PERFIL] ID (ROL): NOMBRE - CORREO`
+ * (Ejemplo: `[PERFIL] UETS-2026-001 (ESTUDIANTE): Carlos Andrade - carlos@est.salesianos.edu.ec`)
+ */
+export function formatearPerfilUsuario(usuario: PerfilUsuario): string {
+  // 👇 TODO: Escribe tu lógica con Template Strings y reemplaza el return "":
+  return "";
+}
+
 // ============================================================================
 // PASO 2: Interface `ProductoItem` y Función de Descuento
 // ============================================================================
@@ -112,6 +124,14 @@ function assert(condicion: boolean, descripcion: string, pista?: string) {
   }
 }
 
+const perfilFormateado = formatearPerfilUsuario(usuarioEjemplo);
+if (perfilFormateado.length > 0) {
+  console.log("┌────────────────────────────────────────────────────────┐");
+  console.log("│ 📱 PERFIL DE USUARIO FORMATEADO EN CONSOLA             │");
+  console.log(`│ ${perfilFormateado.padEnd(54)} │`);
+  console.log("└────────────────────────────────────────────────────────┘\n");
+}
+
 console.log("🔍 Verificando Paso 1: Interface PerfilUsuario...");
 assert(typeof usuarioEjemplo.id === "string" && usuarioEjemplo.id.length > 0, "usuarioEjemplo tiene un id tipo string válido");
 assert(typeof usuarioEjemplo.nombreCompleto === "string" && usuarioEjemplo.nombreCompleto.length > 0, "usuarioEjemplo tiene nombreCompleto", "Asigna tu nombre en usuarioEjemplo.nombreCompleto");
@@ -119,6 +139,11 @@ assert(typeof usuarioEjemplo.correo === "string" && usuarioEjemplo.correo.includ
 assert(
   usuarioEjemplo.rol === "ADMIN" || usuarioEjemplo.rol === "DOCENTE" || usuarioEjemplo.rol === "ESTUDIANTE",
   "usuarioEjemplo tiene un rol válido del union type"
+);
+assert(
+  perfilFormateado.includes("[PERFIL]") && perfilFormateado.includes(usuarioEjemplo.id),
+  "formatearPerfilUsuario() implementada correctamente",
+  "Usa: `[PERFIL] ${usuario.id} (${usuario.rol}): ${usuario.nombreCompleto} - ${usuario.correo}`"
 );
 
 console.log("\n🔍 Verificando Paso 2: calcularPrecioFinal()...");

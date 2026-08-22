@@ -8,12 +8,14 @@
  * 📖 CONTEXTO / MISIÓN:
  * El sistema web anterior de la UETS sumaba calificaciones en JavaScript vanilla
  * sin tipos ("10" + "8" = "108"), produciendo errores graves en los promedios.
- * Tu misión es implementar las funciones de cálculo y formateo con tipado estricto.
+ * Tu misión es declarar tus variables personales con tipos explícitos, formatear
+ * tus datos e implementar el cálculo de promedios con tipado estricto.
  * 
  * 🛠️ INSTRUCCIONES:
  * 1. Lee atentamente cada bloque marcado con `// TODO:`.
  * 2. Escribe o completa el código TypeScript según las especificaciones.
- * 3. Ejecuta en tu terminal: `pnpm run start:01` para verificar los tests.
+ * 3. Ejecuta en tu terminal: `pnpm run start:01` para verificar los tests y ver
+ *    tu ficha impresa en pantalla.
  */
 
 console.log("=================================================================");
@@ -21,18 +23,28 @@ console.log("🥊 EJECUTANDO PRUEBAS: RETO 01 — Tipos Primitivos & Arrays");
 console.log("=================================================================\n");
 
 // ============================================================================
-// PASO 1: Tipado de Variables Personales
+// PASO 1: Tipado de Variables Personales e Impresión de Resumen
 // ============================================================================
 // TODO: Asigna valores válidos a las variables con sus tipos explícitos requeridos:
 // - `nombreEstudiante` (string): Debe tener al menos 1 caracter.
 // - `edadEstudiante` (number): Debe ser un número mayor a 0.
-// - `promedioObjetivo` (number): Debe ser un número (ej. 9.85).
+// - `promedioObjetivo` (number): Debe ser un número decimal (ej. 9.85).
 // - `estaMatriculado` (boolean): Debe ser true.
 
 export const nombreEstudiante: string = "";       // 👈 TODO: Escribe tu nombre aquí
 export const edadEstudiante: number = 0;          // 👈 TODO: Escribe tu edad aquí
 export const promedioObjetivo: number = 0;        // 👈 TODO: Escribe tu promedio objetivo
 export let estaMatriculado: boolean = false;    // 👈 TODO: Cambia a true
+
+/**
+ * TODO: Implementa la función `obtenerResumenPersonal` usando Template Strings (${...}).
+ * Debe retornar una cadena con este formato exacto:
+ * `👤 Estudiante: NOMBRE | 🎂 Edad: EDAD años | 🎯 Meta: PROMEDIO/10 | 📋 Estado: MATRICULADO` (o NO_MATRICULADO si es false)
+ */
+export function obtenerResumenPersonal(): string {
+  // 👇 TODO: Escribe tu lógica aquí y reemplaza el return "":
+  return "";
+}
 
 // ============================================================================
 // PASO 2: Función para Calcular el Promedio
@@ -90,11 +102,25 @@ function assert(condicion: boolean, descripcion: string, pista?: string) {
   }
 }
 
-console.log("🔍 Verificando Paso 1: Tipos de Variables...");
+// Si el estudiante ya implementó el resumen, lo imprimimos con formato visual:
+const resumenActual = obtenerResumenPersonal();
+if (resumenActual.length > 0) {
+  console.log("┌────────────────────────────────────────────────────────┐");
+  console.log("│ 👤 RESUMEN DEL ESTUDIANTE EN CONSOLA                   │");
+  console.log(`│ ${resumenActual.padEnd(54)} │`);
+  console.log("└────────────────────────────────────────────────────────┘\n");
+}
+
+console.log("🔍 Verificando Paso 1: Tipos de Variables y Resumen...");
 assert(typeof nombreEstudiante === "string" && nombreEstudiante.length > 0, "nombreEstudiante es un string válido", "Asigna tu nombre en la variable nombreEstudiante");
 assert(typeof edadEstudiante === "number" && edadEstudiante > 0, "edadEstudiante es un number positivo", "Asigna tu edad (ej. 17) en edadEstudiante");
 assert(typeof promedioObjetivo === "number" && promedioObjetivo > 0, "promedioObjetivo es de tipo number mayor a 0", "Asigna un promedio (ej. 9.85)");
 assert((estaMatriculado as boolean) === true, "estaMatriculado debe ser true", "Cambia estaMatriculado a true");
+assert(
+  resumenActual.includes("👤 Estudiante:") && resumenActual.includes("🎯 Meta:"),
+  "obtenerResumenPersonal() implementada correctamente",
+  "Usa Template Strings: `👤 Estudiante: ${nombreEstudiante} | 🎂 Edad: ${edadEstudiante} años | 🎯 Meta: ${promedioObjetivo}/10 | 📋 Estado: ${estaMatriculado ? 'MATRICULADO' : 'NO_MATRICULADO'}`"
+);
 
 console.log("\n🔍 Verificando Paso 2: calcularPromedio()...");
 assert(calcularPromedio([]) === 0, "calcularPromedio([]) con arreglo vacío debe retornar 0", "Verifica el if (notas.length === 0)");
