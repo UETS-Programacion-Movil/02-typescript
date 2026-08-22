@@ -29,8 +29,11 @@
  *   (Pista: usa id.toFixed(0).padStart(6, "0"))
  */
 export function formatearIdentificador(id: string | number): string {
-  // 👇 TODO: Escribe tu lógica con if (typeof id === "string") y reemplaza el return "":
-  return "";
+  if (typeof id === "string") {
+    return `ID-ALFANUMERICO-${id.toUpperCase()}`;
+  } else {
+    return `ID-NUMERICO-#${id.toFixed(0).padStart(6, "0")}`;
+  }
 }
 
 // ============================================================================
@@ -67,6 +70,12 @@ export type EstadoPantalla<T> =
  * - Si status === "ERROR": Retornar `❌ Error ${estado.codigo}: ${estado.mensaje}`
  */
 export function renderizarEstadoUI<T>(estado: EstadoPantalla<T>): string {
-  // 👇 TODO: Escribe tu switch(estado.status) aquí y reemplaza el return "":
-  return "";
+  switch (estado.status) {
+    case "LOADING":
+      return `⏳ Cargando datos (${estado.porcentaje}%)...`;
+    case "SUCCESS":
+      return `🎉 Datos cargados con éxito a las ${estado.hora}`;
+    case "ERROR":
+      return `❌ Error ${estado.codigo}: ${estado.mensaje}`;
+  }
 }
