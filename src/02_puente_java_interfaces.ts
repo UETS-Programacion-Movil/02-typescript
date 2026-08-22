@@ -41,11 +41,11 @@ public class UsuarioJava {
 // ============================================================================
 // PASO 1: Define la interface `PerfilUsuario` en TypeScript
 // ============================================================================
-// TODO: Define la interface `PerfilUsuario` con los siguientes campos:
-// - `id`: de tipo string e INMUTABLE (usa la palabra reservada `readonly`)
+// TODO: Define la interface `PerfilUsuario` con los siguientes campos y modificadores:
+// - `id`: de tipo string e INMUTABLE (usa `readonly`)
 // - `nombreCompleto`: de tipo string
 // - `correo`: de tipo string
-// - `telefono`: de tipo string y OPCIONAL (usa el signo `?`)
+// - `telefono`: de tipo string y OPCIONAL (usa `?`)
 // - `rol`: de tipo literal `"ADMIN" | "DOCENTE" | "ESTUDIANTE"`
 
 export interface PerfilUsuario {
@@ -56,11 +56,11 @@ export interface PerfilUsuario {
   rol: "ADMIN" | "DOCENTE" | "ESTUDIANTE";
 }
 
-// TODO: Crea una variable constante `usuarioEjemplo` que cumpla con `PerfilUsuario`:
+// TODO: Completa la variable constante `usuarioEjemplo` asignando valores válidos:
 export const usuarioEjemplo: PerfilUsuario = {
   id: "UETS-2026-001",
-  nombreCompleto: "David Domínguez",
-  correo: "david.dominguez@est.salesianos.edu.ec",
+  nombreCompleto: "",                                // 👈 TODO: Llena tu nombre completo
+  correo: "estudiante@est.salesianos.edu.ec",        // 👈 TODO: Tu correo institucional
   rol: "ESTUDIANTE"
 };
 
@@ -86,17 +86,15 @@ export interface ProductoItem {
  * TODO: Implementa la función `calcularPrecioFinal`.
  * Reglas:
  * 1. Si el producto NO está disponible (`!producto.disponible`), retornar 0.
- * 2. Si tiene `descuentoPorcentaje` mayor a 0, restar ese porcentaje al precio original.
- * 3. Si no tiene descuento, retornar el precio original.
- * 4. Retornar el número redondeado a 2 decimales.
+ * 2. Si tiene `descuentoPorcentaje` mayor a 0, restar ese porcentaje al precio original:
+ *    descuento = producto.precio * (producto.descuentoPorcentaje / 100)
+ *    precioFinal = producto.precio - descuento
+ * 3. Si no tiene descuento o es 0, retornar el precio original.
+ * 4. Retornar el número redondeado a 2 decimales: Number(precioFinal.toFixed(2)).
  */
 export function calcularPrecioFinal(producto: ProductoItem): number {
-  if (!producto.disponible) return 0;
-  if (producto.descuentoPorcentaje && producto.descuentoPorcentaje > 0) {
-    const rebaja = producto.precio * (producto.descuentoPorcentaje / 100);
-    return Number((producto.precio - rebaja).toFixed(2));
-  }
-  return Number(producto.precio.toFixed(2));
+  // 👇 TODO: Escribe tu lógica aquí y reemplaza el return 0:
+  return 0;
 }
 
 // ============================================================================
@@ -115,9 +113,9 @@ function assert(condicion: boolean, descripcion: string, pista?: string) {
 }
 
 console.log("🔍 Verificando Paso 1: Interface PerfilUsuario...");
-assert(typeof usuarioEjemplo.id === "string", "usuarioEjemplo tiene un id tipo string");
-assert(typeof usuarioEjemplo.nombreCompleto === "string", "usuarioEjemplo tiene nombreCompleto");
-assert(typeof usuarioEjemplo.correo === "string", "usuarioEjemplo tiene correo");
+assert(typeof usuarioEjemplo.id === "string" && usuarioEjemplo.id.length > 0, "usuarioEjemplo tiene un id tipo string válido");
+assert(typeof usuarioEjemplo.nombreCompleto === "string" && usuarioEjemplo.nombreCompleto.length > 0, "usuarioEjemplo tiene nombreCompleto", "Asigna tu nombre en usuarioEjemplo.nombreCompleto");
+assert(typeof usuarioEjemplo.correo === "string" && usuarioEjemplo.correo.includes("@"), "usuarioEjemplo tiene correo válido");
 assert(
   usuarioEjemplo.rol === "ADMIN" || usuarioEjemplo.rol === "DOCENTE" || usuarioEjemplo.rol === "ESTUDIANTE",
   "usuarioEjemplo tiene un rol válido del union type"
@@ -131,7 +129,7 @@ const item1: ProductoItem = {
   disponible: true,
   descuentoPorcentaje: 25 // 25% de 20 = 5 -> Precio final = 15.00
 };
-assert(calcularPrecioFinal(item1) === 15.00, "Producto con 25% de descuento calcula $15.00 correctamente");
+assert(calcularPrecioFinal(item1) === 15.00, "Producto con 25% de descuento calcula $15.00 correctamente", "Resta (precio * porcentaje / 100) al precio");
 
 const item2: ProductoItem = {
   id: "P2",
@@ -148,7 +146,7 @@ const item3: ProductoItem = {
   disponible: false,
   descuentoPorcentaje: 50
 };
-assert(calcularPrecioFinal(item3) === 0, "Producto NO disponible retorna $0.00", "Revisa la condición if (!producto.disponible)");
+assert(calcularPrecioFinal(item3) === 0, "Producto NO disponible retorna $0.00", "Verifica if (!producto.disponible) return 0;");
 
 console.log("\n-----------------------------------------------------------------");
 if (testsFallidos === 0) {
@@ -156,6 +154,6 @@ if (testsFallidos === 0) {
   console.log("👉 Avanza al Reto 03 ejecutando: pnpm run start:03\n");
   process.exit(0);
 } else {
-  console.log(`⚠️ Tienes ${testsFallidos} prueba(s) pendiente(s). Corrige tu código y vuelve a ejecutar.`);
+  console.log(`⚠️ Tienes ${testsFallidos} prueba(s) pendiente(s). Completa tu código en src/02_puente_java_interfaces.ts y vuelve a ejecutar.`);
   process.exit(1);
 }

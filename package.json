@@ -1,5 +1,5 @@
 {
-  "name": "semana-02-typescript",
+  "name": "02-typescript",
   "version": "1.0.0",
   "description": "Material Didáctico y Taller Práctico: Bases de TypeScript y Puente Pedagógico con Java — Programación Móvil (3° BGU) — UETS 2026-2027",
   "main": "src/01_tipos_primitivos.ts",

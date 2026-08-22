@@ -11,8 +11,8 @@
  * 
  * 🛠️ INSTRUCCIONES:
  * 1. Revisa las interfaces de datos del pedido y catálogo.
- * 2. Implementa la función `calcularTotalesPedido` aplicando la regla de negocio
- *    (descuento estudiantil del 10% si el subtotal es >= $10.00, IVA del 15%).
+ * 2. Implementa la función `calcularTotalesPedido` aplicando las reglas de negocio
+ *    (subtotal acumulado, descuento estudiantil del 10% si subtotal >= $10.00, IVA del 15%).
  * 3. Ejecuta en tu terminal: `pnpm run start:04` para verificar los tests y
  *    ver tu ticket digital impreso en pantalla.
  */
@@ -54,7 +54,7 @@ export interface PedidoMovil {
 
 export interface ResumenFinanciero {
   subtotal: number;
-  descuentoEstudiantil: number; // 10% si subtotal >= $10.00
+  descuentoEstudiantil: number; // 10% si subtotal >= $10.00, sino 0
   iva15: number;                // 15% sobre la base imponible neta
   totalPagar: number;           // baseImponible + iva15
 }
@@ -64,29 +64,22 @@ export interface ResumenFinanciero {
 // ============================================================================
 /**
  * TODO: Implementa `calcularTotalesPedido`.
- * Reglas:
- * 1. Calcular el `subtotal` sumando (precioUnitario * cantidad) de cada línea de detalle.
- * 2. `descuentoEstudiantil`: Si `subtotal >= 10.0`, aplicar el 10% (subtotal * 0.10). Si no, 0.
+ * Reglas de Negocio:
+ * 1. `subtotal`: Sumar (precioUnitario * cantidad) de cada elemento en `pedido.detalles`.
+ * 2. `descuentoEstudiantil`: Si `subtotal >= 10.00`, calcular el 10% (subtotal * 0.10). Si es menor, 0.
  * 3. `baseImponible`: subtotal - descuentoEstudiantil.
  * 4. `iva15`: baseImponible * 0.15.
  * 5. `totalPagar`: baseImponible + iva15.
- * Todos los campos deben ser number redondeados a 2 decimales.
+ * 
+ * Todos los valores numéricos deben retornar redondeados a 2 decimales: Number(val.toFixed(2)).
  */
 export function calcularTotalesPedido(pedido: PedidoMovil): ResumenFinanciero {
-  const subtotal = pedido.detalles.reduce((acumulado, linea) => {
-    return acumulado + (linea.producto.precioUnitario * linea.cantidad);
-  }, 0);
-
-  const descuentoEstudiantil = subtotal >= 10.0 ? subtotal * 0.10 : 0;
-  const baseImponible = subtotal - descuentoEstudiantil;
-  const iva15 = baseImponible * 0.15;
-  const totalPagar = baseImponible + iva15;
-
+  // 👇 TODO: Escribe tu lógica de cálculo aquí y reemplaza el objeto por defecto:
   return {
-    subtotal: Number(subtotal.toFixed(2)),
-    descuentoEstudiantil: Number(descuentoEstudiantil.toFixed(2)),
-    iva15: Number(iva15.toFixed(2)),
-    totalPagar: Number(totalPagar.toFixed(2))
+    subtotal: 0,
+    descuentoEstudiantil: 0,
+    iva15: 0,
+    totalPagar: 0
   };
 }
 
@@ -149,10 +142,10 @@ const pedidoPruebaMenor10: PedidoMovil = {
 };
 
 const totales1 = calcularTotalesPedido(pedidoPruebaMenor10);
-assert(totales1.subtotal === 5.00, "Subtotal calculado: $5.00");
+assert(totales1.subtotal === 5.00, "Subtotal calculado correctamente: $5.00", "Suma precioUnitario * cantidad");
 assert(totales1.descuentoEstudiantil === 0.00, "Sin descuento para compras menores a $10.00");
-assert(totales1.iva15 === 0.75, "IVA 15% de $5.00 es $0.75");
-assert(totales1.totalPagar === 5.75, "Total a pagar: $5.75");
+assert(totales1.iva15 === 0.75, "IVA 15% de $5.00 es $0.75", "baseImponible * 0.15");
+assert(totales1.totalPagar === 5.75, "Total a pagar: $5.75", "baseImponible + iva15");
 
 const pedidoPruebaMayor10: PedidoMovil = {
   numeroOrden: "ORD-002",
@@ -168,12 +161,14 @@ const pedidoPruebaMayor10: PedidoMovil = {
 };
 
 const totales2 = calcularTotalesPedido(pedidoPruebaMayor10);
-assert(totales2.subtotal === 10.50, "Subtotal calculado: $10.50");
-assert(totales2.descuentoEstudiantil === 1.05, "Descuento 10% aplicado para compras >= $10.00 ($1.05)");
+assert(totales2.subtotal === 10.50, "Subtotal calculado correctamente: $10.50");
+assert(totales2.descuentoEstudiantil === 1.05, "Descuento 10% aplicado para compras >= $10.00 ($1.05)", "subtotal * 0.10");
 assert(totales2.totalPagar === 10.87, "Total final con IVA 15%: $10.87");
 
 // Imprimir recibo visual en terminal:
-imprimirTicketDigital(pedidoPruebaMayor10);
+if (totales2.totalPagar > 0) {
+  imprimirTicketDigital(pedidoPruebaMayor10);
+}
 
 console.log("-----------------------------------------------------------------");
 if (testsFallidos === 0) {
@@ -182,6 +177,6 @@ if (testsFallidos === 0) {
   console.log("👉 Ahora ejecuta 'pnpm run check' para confirmar que no hay errores de tipos.\n");
   process.exit(0);
 } else {
-  console.log(`⚠️ Tienes ${testsFallidos} prueba(s) pendiente(s). Corrige tu código y vuelve a ejecutar.`);
+  console.log(`⚠️ Tienes ${testsFallidos} prueba(s) pendiente(s). Completa tu código en src/04_desafio_integrador.ts y vuelve a ejecutar.`);
   process.exit(1);
 }

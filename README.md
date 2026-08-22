@@ -13,7 +13,7 @@
 
 Puedes acceder a la presentación interactiva proyectable (desarrollada con estética Neo-Brutalista *Creative Mode* y sin dependencias) directamente desde tu navegador:
 
-👉 **[Ver Presentación Web 16:9 en Vivo](https://uets-programacion-movil.github.io/semana-02-typescript/)** *(o abre `index.html` localmente)*.
+👉 **[Ver Presentación Web 16:9 en Vivo](https://uets-programacion-movil.github.io/02-typescript/)** *(o abre `index.html` localmente)*.
 
 - ⌨ **Navegación:** Teclas `[←]` `[→]` o `[Espacio]`.
 - 📺 **Pantalla Completa:** Presiona `[F]`.
@@ -40,8 +40,8 @@ El taller está compuesto por **4 Retos Prácticos**. En cada reto encontrarás 
 ### Paso 1: Clonar el Repositorio
 Abre tu terminal en tu carpeta de proyectos y ejecuta:
 ```bash
-git clone https://github.com/UETS-Programacion-Movil/semana-02-typescript.git
-cd semana-02-typescript
+git clone https://github.com/UETS-Programacion-Movil/02-typescript.git
+cd 02-typescript
 ```
 
 ### Paso 2: Instalar Dependencias
@@ -98,7 +98,7 @@ git push origin entrega/tu-nombre-apellido
 ```
 
 ### Paso 8: Abrir tu Pull Request (PR)
-1. Ve al repositorio en GitHub: [UETS-Programacion-Movil/semana-02-typescript](https://github.com/UETS-Programacion-Movil/semana-02-typescript).
+1. Ve al repositorio en GitHub: [UETS-Programacion-Movil/02-typescript](https://github.com/UETS-Programacion-Movil/02-typescript).
 2. Verás un botón verde que dice **"Compare & pull request"**.
 3. Ponle de título: `Entrega Semana 2 - Tu Nombre y Apellido`.
 4. En la descripción se cargará la plantilla oficial: escribe tu nombre, tu paralelo y el **enlace de tu video Screencast**.
