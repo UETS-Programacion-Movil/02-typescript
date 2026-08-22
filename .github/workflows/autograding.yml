@@ -1,4 +1,4 @@
-name: UETS Autograding & Quality Guard
+name: "UETS Autograding and Quality Guard"
 
 on:
   pull_request:
@@ -12,15 +12,15 @@ permissions:
 
 jobs:
   evaluate:
-    name: 🎓 Autograding & Integrity Guard
+    name: "Autograding and Integrity Guard"
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout del Código
+      - name: "Checkout del Codigo"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: 🟢 Setup Node.js & pnpm
+      - name: "Setup Node.js and pnpm"
         uses: pnpm/action-setup@v4
         with:
           version: 10.4.1
@@ -30,16 +30,16 @@ jobs:
           node-version: 22
           cache: 'pnpm'
 
-      - name: 📦 Instalar Dependencias
+      - name: "Instalar Dependencias"
         run: pnpm install --frozen-lockfile=false
 
       # -----------------------------------------------------------------------
       # 1. FILE INTEGRITY GUARD (Anti-Tampering)
       # -----------------------------------------------------------------------
-      - name: 🛡️ File Integrity Guard
+      - name: "File Integrity Guard"
         id: file_guard
         run: |
-          echo "🔍 Verificando integridad de archivos modificados..."
+          echo "Verificando integridad de archivos modificados..."
           CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
           echo "Archivos modificados en este PR:"
           echo "$CHANGED_FILES"
@@ -56,21 +56,21 @@ jobs:
           done
 
           if [ -n "$UNAUTHORIZED_FILES" ]; then
-            echo "❌ Archivos no autorizados detectados:$UNAUTHORIZED_FILES"
+            echo "Archivos no autorizados detectados:$UNAUTHORIZED_FILES"
             echo "status=fail" >> $GITHUB_OUTPUT
             echo "unauthorized=$UNAUTHORIZED_FILES" >> $GITHUB_OUTPUT
           else
-            echo "✅ Integridad de archivos verificada con éxito."
+            echo "Integridad de archivos verificada con exito."
             echo "status=pass" >> $GITHUB_OUTPUT
           fi
 
       # -----------------------------------------------------------------------
       # 2. COMMIT LINTER (Conventional Commits)
       # -----------------------------------------------------------------------
-      - name: 📝 Commit Message Linter
+      - name: "Commit Message Linter"
         id: commit_lint
         run: |
-          echo "🔍 Verificando formato de mensajes de commit..."
+          echo "Verificando formato de mensajes de commit..."
           COMMITS=$(git log --format="%s" origin/main...HEAD)
           echo "Commits en este PR:"
           echo "$COMMITS"
@@ -87,18 +87,18 @@ jobs:
           done <<< "$COMMITS"
 
           if [ -n "$INVALID_COMMITS" ]; then
-            echo "⚠️ Commits no convencionales detectados:$INVALID_COMMITS"
+            echo "Commits no convencionales detectados:$INVALID_COMMITS"
             echo "status=warn" >> $GITHUB_OUTPUT
             echo "invalid_commits=$INVALID_COMMITS" >> $GITHUB_OUTPUT
           else
-            echo "✅ Todos los commits siguen el estándar Conventional Commits."
+            echo "Todos los commits siguen el estandar Conventional Commits."
             echo "status=pass" >> $GITHUB_OUTPUT
           fi
 
       # -----------------------------------------------------------------------
       # 3. TYPESCRIPT STRICT TYPECHECK (tsc --noEmit)
       # -----------------------------------------------------------------------
-      - name: 🔍 TypeScript Strict Typecheck
+      - name: "TypeScript Strict Typecheck"
         id: typecheck
         continue-on-error: true
         run: |
@@ -112,28 +112,28 @@ jobs:
       # -----------------------------------------------------------------------
       # 4. RUN INDIVIDUAL CHALLENGE TESTS
       # -----------------------------------------------------------------------
-      - name: 🥊 Test Reto 01 (Primitivos & Promedios)
+      - name: "Test Reto 01"
         id: test_01
         continue-on-error: true
         run: |
           pnpm run start:01
           if [ $? -eq 0 ]; then echo "status=pass" >> $GITHUB_OUTPUT; else echo "status=fail" >> $GITHUB_OUTPUT; fi
 
-      - name: 🥊 Test Reto 02 (Interfaces & Puente Java)
+      - name: "Test Reto 02"
         id: test_02
         continue-on-error: true
         run: |
           pnpm run start:02
           if [ $? -eq 0 ]; then echo "status=pass" >> $GITHUB_OUTPUT; else echo "status=fail" >> $GITHUB_OUTPUT; fi
 
-      - name: 🥊 Test Reto 03 (Estados Móviles & Uniones)
+      - name: "Test Reto 03"
         id: test_03
         continue-on-error: true
         run: |
           pnpm run start:03
           if [ $? -eq 0 ]; then echo "status=pass" >> $GITHUB_OUTPUT; else echo "status=fail" >> $GITHUB_OUTPUT; fi
 
-      - name: 🥊 Test Reto 04 (Desafío Integrador Bar Salesiano)
+      - name: "Test Reto 04"
         id: test_04
         continue-on-error: true
         run: |
@@ -141,9 +141,9 @@ jobs:
           if [ $? -eq 0 ]; then echo "status=pass" >> $GITHUB_OUTPUT; else echo "status=fail" >> $GITHUB_OUTPUT; fi
 
       # -----------------------------------------------------------------------
-      # 5. GENERAR COMENTARIO Y CALIFICACIÓN AUTOMÁTICA EN PR
+      # 5. GENERAR COMENTARIO Y CALIFICACION AUTOMATICA EN PR
       # -----------------------------------------------------------------------
-      - name: 💬 Publicar Calificación en el PR
+      - name: "Publicar Calificacion en el PR"
         uses: actions/github-script@v7
         if: always() && github.event_name == 'pull_request'
         with:
