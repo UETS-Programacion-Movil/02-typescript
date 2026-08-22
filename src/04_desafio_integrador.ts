@@ -70,12 +70,28 @@ export interface ResumenFinanciero {
  * Todos los valores numéricos deben retornar redondeados a 2 decimales: Number(val.toFixed(2)).
  */
 export function calcularTotalesPedido(pedido: PedidoMovil): ResumenFinanciero {
-  // 👇 TODO: Escribe tu lógica de cálculo aquí y reemplaza el objeto por defecto:
+  // 1. Calcular subtotal
+  const subtotal = pedido.detalles.reduce((acumulado, linea) => {
+    return acumulado + (linea.producto.precioUnitario * linea.cantidad);
+  }, 0);
+
+  // 2. Descuento estudiantil (10% si subtotal >= $10.00)
+  const descuentoEstudiantil = subtotal >= 10.00 ? subtotal * 0.10 : 0;
+
+  // 3. Base imponible
+  const baseImponible = subtotal - descuentoEstudiantil;
+
+  // 4. IVA 15% (Ecuador 2026)
+  const iva15 = baseImponible * 0.15;
+
+  // 5. Total a pagar
+  const totalPagar = baseImponible + iva15;
+
   return {
-    subtotal: 0,
-    descuentoEstudiantil: 0,
-    iva15: 0,
-    totalPagar: 0
+    subtotal: Number(subtotal.toFixed(2)),
+    descuentoEstudiantil: Number(descuentoEstudiantil.toFixed(2)),
+    iva15: Number(iva15.toFixed(2)),
+    totalPagar: Number(totalPagar.toFixed(2))
   };
 }
 
