@@ -1,0 +1,276 @@
+name: "Autograding"
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  evaluate:
+    name: "Autograding and Integrity Guard"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout del Codigo"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "Setup pnpm"
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+
+      - name: "Setup Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: "Instalar Dependencias"
+        run: pnpm install --no-frozen-lockfile
+
+      # -----------------------------------------------------------------------
+      # 1. FILE INTEGRITY GUARD (Anti-Tampering)
+      # -----------------------------------------------------------------------
+      - name: "File Integrity Guard"
+        id: file_guard
+        run: |
+          echo "Verificando integridad de archivos modificados..."
+          CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+          echo "Archivos modificados en este PR:"
+          echo "$CHANGED_FILES"
+          
+          UNAUTHORIZED_FILES=""
+          for file in $CHANGED_FILES; do
+            case "$file" in
+              src/01_tipos_primitivos.ts | src/02_puente_java_interfaces.ts | src/03_unions_narrowing.ts | src/04_desafio_integrador.ts | README.md)
+                ;;
+              *)
+                UNAUTHORIZED_FILES="$UNAUTHORIZED_FILES $file"
+                ;;
+            esac
+          done
+
+          if [ -n "$UNAUTHORIZED_FILES" ]; then
+            echo "Archivos no autorizados detectados:$UNAUTHORIZED_FILES"
+            echo "status=fail" >> $GITHUB_OUTPUT
+            echo "unauthorized=$UNAUTHORIZED_FILES" >> $GITHUB_OUTPUT
+          else
+            echo "Integridad de archivos verificada con exito."
+            echo "status=pass" >> $GITHUB_OUTPUT
+          fi
+
+      # -----------------------------------------------------------------------
+      # 2. COMMIT LINTER (Conventional Commits)
+      # -----------------------------------------------------------------------
+      - name: "Commit Message Linter"
+        id: commit_lint
+        run: |
+          echo "Verificando formato de mensajes de commit..."
+          COMMITS=$(git log --format="%s" origin/main...HEAD)
+          echo "Commits en este PR:"
+          echo "$COMMITS"
+
+          INVALID_COMMITS=""
+          PATTERN="^(feat|fix|docs|style|refactor|test|chore)(\([a-zA-Z0-9_\-]+\))?: .+"
+
+          while IFS= read -r commit; do
+            if [ -n "$commit" ]; then
+              if ! [[ "$commit" =~ $PATTERN ]]; then
+                INVALID_COMMITS="$INVALID_COMMITS '$commit'"
+              fi
+            fi
+          done <<< "$COMMITS"
+
+          if [ -n "$INVALID_COMMITS" ]; then
+            echo "Commits no convencionales detectados:$INVALID_COMMITS"
+            echo "status=warn" >> $GITHUB_OUTPUT
+            echo "invalid_commits=$INVALID_COMMITS" >> $GITHUB_OUTPUT
+          else
+            echo "Todos los commits siguen el estandar Conventional Commits."
+            echo "status=pass" >> $GITHUB_OUTPUT
+          fi
+
+      # -----------------------------------------------------------------------
+      # 3. TYPESCRIPT STRICT TYPECHECK (tsc --noEmit)
+      # -----------------------------------------------------------------------
+      - name: "TypeScript Strict Typecheck"
+        id: typecheck
+        continue-on-error: true
+        run: |
+          pnpm run check
+          if [ $? -eq 0 ]; then
+            echo "status=pass" >> $GITHUB_OUTPUT
+          else
+            echo "status=fail" >> $GITHUB_OUTPUT
+          fi
+
+      # -----------------------------------------------------------------------
+      # 4. RUN INDIVIDUAL CHALLENGE TESTS
+      # -----------------------------------------------------------------------
+      - name: "Test Reto 01"
+        id: test_01
+        continue-on-error: true
+        run: |
+          pnpm run start:01
+          if [ $? -eq 0 ]; then echo "status=pass" >> $GITHUB_OUTPUT; else echo "status=fail" >> $GITHUB_OUTPUT; fi
+
+      - name: "Test Reto 02"
+        id: test_02
+        continue-on-error: true
+        run: |
+          pnpm run start:02
+          if [ $? -eq 0 ]; then echo "status=pass" >> $GITHUB_OUTPUT; else echo "status=fail" >> $GITHUB_OUTPUT; fi
+
+      - name: "Test Reto 03"
+        id: test_03
+        continue-on-error: true
+        run: |
+          pnpm run start:03
+          if [ $? -eq 0 ]; then echo "status=pass" >> $GITHUB_OUTPUT; else echo "status=fail" >> $GITHUB_OUTPUT; fi
+
+      - name: "Test Reto 04"
+        id: test_04
+        continue-on-error: true
+        run: |
+          pnpm run start:04
+          if [ $? -eq 0 ]; then echo "status=pass" >> $GITHUB_OUTPUT; else echo "status=fail" >> $GITHUB_OUTPUT; fi
+
+      # -----------------------------------------------------------------------
+      # 5. GENERAR SUMMARY Y PUBLICAR COMENTARIO OFICIAL EN PR
+      # -----------------------------------------------------------------------
+      - name: "Generar Reporte de Evaluacion"
+        if: always()
+        run: |
+          FG="${{ steps.file_guard.outputs.status }}"
+          CL="${{ steps.commit_lint.outputs.status }}"
+          TC="${{ steps.typecheck.outputs.status }}"
+          T1="${{ steps.test_01.outputs.status }}"
+          T2="${{ steps.test_02.outputs.status }}"
+          T3="${{ steps.test_03.outputs.status }}"
+          T4="${{ steps.test_04.outputs.status }}"
+
+          SCORE="0.00"
+          FG_TEXT="❌ Modificaciones no autorizadas"
+          CL_TEXT="⚠️ Commits genéricos (0.00)"
+          TC_TEXT="❌ Errores en tsc (0.00)"
+          T1_TEXT="❌ Falló / Incompleto (0.00)"
+          T2_TEXT="❌ Falló / Incompleto (0.00)"
+          T3_TEXT="❌ Falló / Incompleto (0.00)"
+          T4_TEXT="❌ Falló / Incompleto (0.00)"
+
+          [ "$FG" = "pass" ] && FG_TEXT="✅ Válido"
+          [ "$CL" = "pass" ] && CL_TEXT="✅ Cumple Conventional Commits (+0.50)"
+          [ "$TC" = "pass" ] && TC_TEXT="✅ 0 Errores de Compilación (+0.50)"
+          [ "$T1" = "pass" ] && T1_TEXT="✅ Pasó (+1.00)"
+          [ "$T2" = "pass" ] && T2_TEXT="✅ Pasó (+1.00)"
+          [ "$T3" = "pass" ] && T3_TEXT="✅ Pasó (+1.00)"
+          [ "$T4" = "pass" ] && T4_TEXT="✅ Pasó (+1.00)"
+
+          TOTAL=0
+          if [ "$FG" = "pass" ]; then
+            [ "$CL" = "pass" ] && TOTAL=$((TOTAL + 50))
+            [ "$TC" = "pass" ] && TOTAL=$((TOTAL + 50))
+            [ "$T1" = "pass" ] && TOTAL=$((TOTAL + 100))
+            [ "$T2" = "pass" ] && TOTAL=$((TOTAL + 100))
+            [ "$T3" = "pass" ] && TOTAL=$((TOTAL + 100))
+            [ "$T4" = "pass" ] && TOTAL=$((TOTAL + 100))
+          fi
+
+          INTEGER_PART=$((TOTAL / 100))
+          DECIMAL_PART=$((TOTAL % 100))
+          printf -v FORMATTED_SCORE "%d.%02d" $INTEGER_PART $DECIMAL_PART
+
+          echo "### 🎓 UETS Autograding Bot — Resultado de Evaluación (Semana 2)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Verificación / Reto Evaluado | Estado | Puntaje Bloque A |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :---: | :---: |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🛡️ **Integridad de Archivos (File Guard)** | $FG_TEXT | — |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📝 **Estándar de Commits (Conventional)** | $CL_TEXT | $([ "$CL" = "pass" ] && echo "0.50" || echo "0.00") / 0.50 pts |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔍 **TypeScript Strict Check (\`tsc\`)** | $TC_TEXT | $([ "$TC" = "pass" ] && echo "0.50" || echo "0.00") / 0.50 pts |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🥊 **Reto 01:** Tipos Primitivos & Promedios | $T1_TEXT | $([ "$T1" = "pass" ] && echo "1.00" || echo "0.00") / 1.00 pts |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🥊 **Reto 02:** Interfaces & Puente Java | $T2_TEXT | $([ "$T2" = "pass" ] && echo "1.00" || echo "0.00") / 1.00 pts |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🥊 **Reto 03:** Estados Móviles & Uniones | $T3_TEXT | $([ "$T3" = "pass" ] && echo "1.00" || echo "0.00") / 1.00 pts |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🥊 **Reto 04:** Carrito del Bar Salesiano | $T4_TEXT | $([ "$T4" = "pass" ] && echo "1.00" || echo "0.00") / 1.00 pts |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🏆 Puntaje Preliminar Bloque A (Código en GitHub): **$FORMATTED_SCORE / 5.00 Puntos**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> [!NOTE]" >> $GITHUB_STEP_SUMMARY
+          echo "> Tu docente **Ing. Milton Velásquez** revisará tu **Screencast de 3 minutos (Bloque B - 5.0 pts)** enlazado en la descripción del PR para registrar tu calificación consolidada sobre **10.0 puntos**." >> $GITHUB_STEP_SUMMARY
+
+      - name: "Publicar Comentario en el PR"
+        uses: actions/github-script@v7
+        if: always() && github.event_name == 'pull_request'
+        env:
+          STATUS_FG: ${{ steps.file_guard.outputs.status }}
+          STATUS_CL: ${{ steps.commit_lint.outputs.status }}
+          STATUS_TC: ${{ steps.typecheck.outputs.status }}
+          STATUS_T1: ${{ steps.test_01.outputs.status }}
+          STATUS_T2: ${{ steps.test_02.outputs.status }}
+          STATUS_T3: ${{ steps.test_03.outputs.status }}
+          STATUS_T4: ${{ steps.test_04.outputs.status }}
+        with:
+          script: |
+            try {
+              const fg = process.env.STATUS_FG;
+              const cl = process.env.STATUS_CL;
+              const tc = process.env.STATUS_TC;
+              const t1 = process.env.STATUS_T1;
+              const t2 = process.env.STATUS_T2;
+              const t3 = process.env.STATUS_T3;
+              const t4 = process.env.STATUS_T4;
+
+              let score = 0.0;
+              let fgText = fg === "pass" ? "✅ Válido" : "❌ Modificaciones no autorizadas";
+              let clText = cl === "pass" ? "✅ Cumple Conventional Commits (+0.50)" : "⚠️ Commits genéricos (0.00)";
+              let tcText = tc === "pass" ? "✅ 0 Errores de Compilación (+0.50)" : "❌ Errores en tsc (0.00)";
+              let t1Text = t1 === "pass" ? "✅ Pasó (+1.00)" : "❌ Falló / Incompleto (0.00)";
+              let t2Text = t2 === "pass" ? "✅ Pasó (+1.00)" : "❌ Falló / Incompleto (0.00)";
+              let t3Text = t3 === "pass" ? "✅ Pasó (+1.00)" : "❌ Falló / Incompleto (0.00)";
+              let t4Text = t4 === "pass" ? "✅ Pasó (+1.00)" : "❌ Falló / Incompleto (0.00)";
+
+              if (fg === "pass") {
+                if (cl === "pass") score += 0.50;
+                if (tc === "pass") score += 0.50;
+                if (t1 === "pass") score += 1.00;
+                if (t2 === "pass") score += 1.00;
+                if (t3 === "pass") score += 1.00;
+                if (t4 === "pass") score += 1.00;
+              } else {
+                score = 0.0;
+              }
+
+              const prNumber = context.payload.pull_request ? context.payload.pull_request.number : context.issue.number;
+              const authorLogin = context.payload.pull_request ? context.payload.pull_request.user.login : "estudiante";
+
+              const body = `### 🎓 UETS Autograding Bot — Resultado de Evaluación (Semana 2)
+
+Hola @${authorLogin}, tu entrega ha sido evaluada automáticamente:
+
+| Verificación / Reto Evaluado | Estado | Puntaje Bloque A |
+| :--- | :---: | :---: |
+| 🛡️ **Integridad de Archivos (File Guard)** | ${fgText} | — |
+| 📝 **Estándar de Commits (Conventional)** | ${clText} | ${cl === "pass" ? "0.50" : "0.00"} / 0.50 pts |
+| 🔍 **TypeScript Strict Check (\`tsc\`)** | ${tcText} | ${tc === "pass" ? "0.50" : "0.00"} / 0.50 pts |
+| 🥊 **Reto 01:** Tipos Primitivos & Promedios | ${t1Text} | ${t1 === "pass" ? "1.00" : "0.00"} / 1.00 pts |
+| 🥊 **Reto 02:** Interfaces & Puente Java | ${t2Text} | ${t2 === "pass" ? "1.00" : "0.00"} / 1.00 pts |
+| 🥊 **Reto 03:** Estados Móviles & Uniones | ${t3Text} | ${t3 === "pass" ? "1.00" : "0.00"} / 1.00 pts |
+| 🥊 **Reto 04:** Carrito del Bar Salesiano | ${t4Text} | ${t4 === "pass" ? "1.00" : "0.00"} / 1.00 pts |
+
+---
+
+### 🏆 Puntaje Preliminar Bloque A (Código en GitHub): **${score.toFixed(2)} / 5.00 Puntos**
+
+> [!NOTE]
+> Tu docente **Ing. Milton Velásquez** revisará tu **Screencast de 3 minutos (Bloque B - 5.0 pts)** enlazado en la descripción del PR para registrar tu calificación consolidada sobre **10.0 puntos**.`;
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: body
+              });
+              console.log("Comentario publicado exitosamente en el PR #" + prNumber);
+            } catch (err) {
+              console.error("Error al publicar comentario:", err.message);
+            }

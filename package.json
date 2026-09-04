@@ -1,0 +1,31 @@
+{
+  "name": "02-typescript",
+  "version": "1.0.0",
+  "description": "Material Didáctico y Taller Práctico: Bases de TypeScript y Puente Pedagógico con Java — Programación Móvil (3° BGU) — UETS 2026-2027",
+  "main": "src/01_tipos_primitivos.ts",
+  "type": "module",
+  "scripts": {
+    "test": "tsx tests/runner.ts",
+    "start:01": "tsx tests/01_tipos_primitivos.test.ts",
+    "start:02": "tsx tests/02_puente_java_interfaces.test.ts",
+    "start:03": "tsx tests/03_unions_narrowing.test.ts",
+    "start:04": "tsx tests/04_desafio_integrador.test.ts",
+    "check": "tsc --noEmit",
+    "build": "tsc"
+  },
+  "keywords": [
+    "typescript",
+    "react-native",
+    "java",
+    "uets",
+    "bachillerato-tecnico",
+    "mobile-development"
+  ],
+  "author": "Ing. Milton Velásquez <UETS>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3"
+  }
+}
